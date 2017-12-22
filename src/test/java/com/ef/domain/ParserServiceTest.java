@@ -13,8 +13,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import com.ef.database.BlockedIpRepository;
+import com.ef.database.IpAccessRepository;
 import com.ef.service.LogReader;
 import com.ef.service.ParserService;
 
@@ -25,6 +28,9 @@ public class ParserServiceTest {
 	
 	@Mock
     private IpAccessRepository repository;
+	
+	@Mock
+    private BlockedIpRepository blockedRepository;
 	
 	@Mock
     private LogReader reader;
@@ -57,6 +63,7 @@ public class ParserServiceTest {
 		service.getIpsExceedingThreshold(startDate, LogPeriod.DAILY, threshold);
 		
 		verify(repository).findIpsWithThresholdBetweenDates(eq(threshold), eq(startDate), eq(startDate.plusHours(24)));
+		verify(repository).findIpsWithThresholdBetweenDates(eq(threshold), eq(startDate), eq(startDate.plusHours(24)));
 	}
 
 	@Test
@@ -65,10 +72,13 @@ public class ParserServiceTest {
 		LocalDateTime startDate = LocalDateTime.now();
 		
 		ArrayList<String> list = new ArrayList<>();
+		list.add("192.168.0.1");
+		list.add("192.168.0.2");
 		when(repository.findIpsWithThresholdBetweenDates(anyInt(), any(LocalDateTime.class), any(LocalDateTime.class))).thenReturn(list);
 		
 		service.getIpsExceedingThreshold(startDate, LogPeriod.HOURLY, threshold);
 		
 		verify(repository).findIpsWithThresholdBetweenDates(eq(threshold), eq(startDate), eq(startDate.plusHours(1)));
+		verify(blockedRepository, Mockito.times(2)).insert(any(BlockedIp.class));
 	}
 }

@@ -16,11 +16,8 @@ import com.ef.domain.IpAccess;
 @Service
 public class LogReader {
 
-	@Value("${logparser.reader.separator}")
 	private String SEPARATOR;
-	
 
-	@Value("${logparser.reader.datepattern}")
 	private String DATE_PATTERN;
 	
 	private static final int DATE = 0;
@@ -44,5 +41,15 @@ public class LogReader {
 
 	private String[] parse(String line) {
 		return line.split(SEPARATOR);
+	}
+
+	@Value("${logparser.reader.separator}")
+	public void setSeparator(String separator) {
+		SEPARATOR = separator;
+	}
+
+	@Value("${logparser.reader.datepattern}")
+	public void setDatePattern(String datePattern) {
+		DATE_PATTERN = datePattern;
 	}
 }

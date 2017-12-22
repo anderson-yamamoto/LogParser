@@ -3,7 +3,6 @@ package com.ef;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.ef.domain.LogPeriod;
@@ -18,11 +17,14 @@ public class Parser {
 		LocalDateTime startDate = LocalDateTime.parse(commandLine.getStartDate(),
 				DateTimeFormatter.ofPattern("yyyy-MM-dd.HH:mm:ss"));
 
-		ApplicationContext ctx = new AnnotationConfigApplicationContext("com.ef");
-		ParserService service = ctx.getBean(ParserService.class);
+		try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext("com.ef")) {
+			ParserService service = ctx.getBean(ParserService.class);
 
-		// service.loadFileToDatabase(commandLine.getAccessLog());
-		service.getIpsExceedingThreshold(startDate, LogPeriod.valueOf(commandLine.getDuration().toUpperCase()),
-				commandLine.getThreshold()).forEach(ip -> System.out.println("Exceeded:" + ip));
+			service.loadFileToDatabase(commandLine.getAccessLog());
+			service.getIpsExceedingThreshold(startDate, LogPeriod.valueOf(commandLine.getDuration().toUpperCase()),
+					commandLine.getThreshold()).forEach(ip -> System.out.println("Exceeded:" + ip));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

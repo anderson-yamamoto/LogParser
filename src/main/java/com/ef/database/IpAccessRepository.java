@@ -1,7 +1,9 @@
-package com.ef.domain;
+package com.ef.database;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.ef.domain.IpAccess;
 
 public interface IpAccessRepository {
 

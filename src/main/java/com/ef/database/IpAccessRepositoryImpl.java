@@ -1,4 +1,4 @@
-package com.ef.domain;
+package com.ef.database;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import com.ef.domain.IpAccess;
 
 @Component
 public class IpAccessRepositoryImpl implements IpAccessRepository {
